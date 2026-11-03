@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="915" height="1344" viewBox="250 72 915 1344" font-family="Liberation Serif">
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="black"/></marker></defs>
+<rect x="250.0" y="72.0" width="915.0" height="1344.0" fill="white"/>
+<polyline points="420.0,126.0 420.0,202.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,262.0 420.0,329.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,391.0 420.0,438.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,538.0 420.0,566.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="427" y="555.0" font-size="14">да</text>
+<polyline points="560.0,488.0 1000.0,488.0 1000.0,1208.0 1000.0,1208.0 1000.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="568.0" y="482.0" font-size="14" text-anchor="start">нет</text>
+<polyline points="420.0,666.0 420.0,694.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="427" y="683.0" font-size="14">да</text>
+<polyline points="560.0,616.0 1000.0,616.0 1000.0,1208.0 1000.0,1208.0 1000.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="568.0" y="610.0" font-size="14" text-anchor="start">нет</text>
+<polyline points="420.0,794.0 420.0,826.5" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="427" y="811.0" font-size="14">да</text>
+<polyline points="560.0,744.0 590.0,744.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="568.0" y="738.0" font-size="14" text-anchor="start">нет</text>
+<polyline points="730.0,794.0 730.0,822.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="737" y="811.0" font-size="14">да</text>
+<polyline points="870.0,744.0 1000.0,744.0 1000.0,1208.0 1000.0,1208.0 1000.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="878.0" y="738.0" font-size="14" text-anchor="start">нет</text>
+<polyline points="730.0,922.0 730.0,950.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="737" y="939.0" font-size="14">да</text>
+<polyline points="870.0,872.0 1000.0,872.0 1000.0,1208.0 1000.0,1208.0 1000.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="878.0" y="866.0" font-size="14" text-anchor="start">нет</text>
+<polyline points="730.0,1050.0 730.0,1097.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="737" y="1067.0" font-size="14">нет</text>
+<polyline points="870.0,1000.0 1000.0,1000.0 1000.0,1208.0 1000.0,1208.0 1000.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="878.0" y="994.0" font-size="14" text-anchor="start">да</text>
+<polyline points="420.0,917.5 420.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="730.0,1159.0 730.0,1208.0 420.0,1208.0 420.0,1226.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,1286.0 420.0,1362.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="1000.0,1286.0 1000.0,1344.0 420.0,1344.0 420.0,1362.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<rect x="345.0" y="82.0" width="150" height="44" rx="22.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="109.2" text-anchor="middle" font-size="15">Начало</text>
+<polygon points="311.0,202.0 545.0,202.0 529.0,262.0 295.0,262.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="228.6" text-anchor="middle" font-size="15">Ввод: код билета,</text>
+<text x="420" y="245.9" text-anchor="middle" font-size="15">зритель, время now</text>
+<rect x="295.0" y="329.0" width="250" height="62" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="356.6" text-anchor="middle" font-size="15">Найти билет по коду</text>
+<text x="420" y="373.9" text-anchor="middle" font-size="15">в хеш-таблице</text>
+<polygon points="420,438.0 560.0,488.0 420,538.0 280.0,488.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="476.0" text-anchor="middle" font-size="15">Билет найден</text>
+<text x="420" y="493.2" text-anchor="middle" font-size="15">и относится к</text>
+<text x="420" y="510.5" text-anchor="middle" font-size="15">мероприятию?</text>
+<polygon points="420,566.0 560.0,616.0 420,666.0 280.0,616.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="604.0" text-anchor="middle" font-size="15">Мероприятие не</text>
+<text x="420" y="621.2" text-anchor="middle" font-size="15">отменено, зал открыт,</text>
+<text x="420" y="638.5" text-anchor="middle" font-size="15">показ не закончен?</text>
+<polygon points="420,694.0 560.0,744.0 420,794.0 280.0,744.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="740.6" text-anchor="middle" font-size="15">Состояние =</text>
+<text x="420" y="757.9" text-anchor="middle" font-size="15">«Оплачен»?</text>
+<rect x="295.0" y="826.5" width="250" height="91.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="851.4" text-anchor="middle" font-size="15">Состояние := «Использован»;</text>
+<text x="420" y="868.6" text-anchor="middle" font-size="15">закрепить зрителя;</text>
+<text x="420" y="885.9" text-anchor="middle" font-size="15">открыть сеанс;</text>
+<text x="420" y="903.1" text-anchor="middle" font-size="15">записать переход</text>
+<polygon points="730,694.0 870.0,744.0 730,794.0 590.0,744.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="730" y="740.6" text-anchor="middle" font-size="15">Состояние =</text>
+<text x="730" y="757.9" text-anchor="middle" font-size="15">«Использован»?</text>
+<polygon points="730,822.0 870.0,872.0 730,922.0 590.0,872.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="730" y="868.6" text-anchor="middle" font-size="15">Тот же</text>
+<text x="730" y="885.9" text-anchor="middle" font-size="15">зритель?</text>
+<polygon points="730,950.0 870.0,1000.0 730,1050.0 590.0,1000.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="730" y="996.6" text-anchor="middle" font-size="15">Сеанс уже</text>
+<text x="730" y="1013.9" text-anchor="middle" font-size="15">открыт?</text>
+<rect x="605.0" y="1097.0" width="250" height="62" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="730" y="1133.2" text-anchor="middle" font-size="15">Открыть сеанс</text>
+<polygon points="311.0,1226.0 545.0,1226.0 529.0,1286.0 295.0,1286.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="1261.2" text-anchor="middle" font-size="15">Вывод: допущен</text>
+<polygon points="891.0,1226.0 1125.0,1226.0 1109.0,1286.0 875.0,1286.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="1000" y="1252.6" text-anchor="middle" font-size="15">Вывод: отказ</text>
+<text x="1000" y="1269.9" text-anchor="middle" font-size="15">с причиной</text>
+<rect x="345.0" y="1362.0" width="150" height="44" rx="22.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="1389.2" text-anchor="middle" font-size="15">Конец</text>
+</svg>

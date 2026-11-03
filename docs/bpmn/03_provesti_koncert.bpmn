@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="bp2_defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="bp2_collab"><bpmn:participant id="bp2_pool" name="Провести концерт" processRef="bp2_process"/>
+</bpmn:collaboration>
+<bpmn:process id="bp2_process" isExecutable="false">
+<bpmn:laneSet id="bp2_ls">
+<bpmn:lane id="bp2_lane0" name="Администратор площадки">
+<bpmn:flowNodeRef>s</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>b1</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="bp2_lane1" name="Контролёр">
+<bpmn:flowNodeRef>b2</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="bp2_lane2" name="Артист">
+<bpmn:flowNodeRef>b3</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e</bpmn:flowNodeRef>
+</bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="s" name="Продажа билетов завершена"><bpmn:outgoing>bp2_f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:manualTask id="b1" name="Смонтировать сцену и оборудование"><bpmn:incoming>bp2_f0</bpmn:incoming><bpmn:outgoing>bp2_f1</bpmn:outgoing></bpmn:manualTask>
+<bpmn:subProcess id="b2" name="Допустить зрителя (А1, А3)"><bpmn:incoming>bp2_f1</bpmn:incoming><bpmn:outgoing>bp2_f2</bpmn:outgoing><bpmn:multiInstanceLoopCharacteristics id="b2_mi"/></bpmn:subProcess>
+<bpmn:manualTask id="b3" name="Выступить на сцене (А4)"><bpmn:incoming>bp2_f2</bpmn:incoming><bpmn:outgoing>bp2_f3</bpmn:outgoing></bpmn:manualTask>
+<bpmn:endEvent id="e" name="Выступление завершено"><bpmn:incoming>bp2_f3</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="bp2_f0" name="" sourceRef="s" targetRef="b1"/>
+<bpmn:sequenceFlow id="bp2_f1" name="" sourceRef="b1" targetRef="b2"/>
+<bpmn:sequenceFlow id="bp2_f2" name="" sourceRef="b2" targetRef="b3"/>
+<bpmn:sequenceFlow id="bp2_f3" name="" sourceRef="b3" targetRef="e"/>
+</bpmn:process>
+<bpmndi:BPMNDiagram id="bp2_d"><bpmndi:BPMNPlane id="bp2_pl" bpmnElement="bp2_collab">
+<bpmndi:BPMNShape id="bp2_pool_di" bpmnElement="bp2_pool" isHorizontal="true"><dc:Bounds x="0" y="0" width="908" height="420"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp2_lane0_di" bpmnElement="bp2_lane0" isHorizontal="true"><dc:Bounds x="36" y="0" width="872" height="140"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp2_lane1_di" bpmnElement="bp2_lane1" isHorizontal="true"><dc:Bounds x="36" y="140" width="872" height="140"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp2_lane2_di" bpmnElement="bp2_lane2" isHorizontal="true"><dc:Bounds x="36" y="280" width="872" height="140"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="s_di" bpmnElement="s"><dc:Bounds x="117" y="51" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="b1_di" bpmnElement="b1"><dc:Bounds x="209" y="29" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="b2_di" bpmnElement="b2" isExpanded="false"><dc:Bounds x="409" y="169" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="b3_di" bpmnElement="b3"><dc:Bounds x="609" y="309" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e_di" bpmnElement="e"><dc:Bounds x="825" y="331" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="bp2_f0_di" bpmnElement="bp2_f0"><di:waypoint x="155" y="70"/><di:waypoint x="209" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp2_f1_di" bpmnElement="bp2_f1"><di:waypoint x="371" y="70"/><di:waypoint x="390" y="70"/><di:waypoint x="390" y="210"/><di:waypoint x="409" y="210"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp2_f2_di" bpmnElement="bp2_f2"><di:waypoint x="571" y="210"/><di:waypoint x="590" y="210"/><di:waypoint x="590" y="350"/><di:waypoint x="609" y="350"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp2_f3_di" bpmnElement="bp2_f3"><di:waypoint x="771" y="350"/><di:waypoint x="825" y="350"/></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

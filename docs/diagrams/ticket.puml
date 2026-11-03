@@ -1,0 +1,26 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 30
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam dpi 250
+skinparam state {
+  BackgroundColor white
+  BorderColor black
+  ArrowColor black
+}
+hide empty description
+[*] --> Забронирован : заказ
+Забронирован --> Оплачен : оплата
+Забронирован --> Отменён : бронь истекла
+Оплачен --> Использован : первый вход в зал\n(гашение)
+Оплачен --> Возвращён : отказ до начала\n(100 / 50 / 30 %)
+Оплачен --> Аннулирован : отмена мероприятия\n(возврат 100 %)
+Использован --> Аннулирован : отмена мероприятия\n(возврат 100 %)
+Использован --> Использован : повторный\nвход
+Отменён --> [*]
+Возвращён --> [*]
+Аннулирован --> [*]
+Использован --> [*] : завершено
+@enduml
