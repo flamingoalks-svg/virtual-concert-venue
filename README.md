@@ -50,6 +50,41 @@ psql -d vcv -f db/schema.sql
 
 Откройте каталог `unity-client/` в Unity Hub (Unity 6.3 LTS). Перед первым коммитом Unity-проекта проверьте настройки редактора (см. `unity-client/README.md`).
 
+## Как проверить работу (аналитический этап)
+
+Процедурная реализация алгоритмов находится в пакете `server/src/main/java/ru/mirea/vcv/procedural`:
+
+| Файл | Что делает |
+|---|---|
+| `Model.java` | Структуры данных: мероприятие, билет, переход состояния билета, экземпляр зала |
+| `TicketProcedures.java` | Алгоритм 1 — проверка и гашение билета при входе (А1) |
+| `RefundProcedures.java` | Алгоритм 2 — возврат билета и отмена мероприятия (А2) |
+| `InstanceProcedures.java` | Алгоритм 3 — распределение зрителей по экземплярам зала (А3) |
+| `PlaybackProcedures.java` | Алгоритм 4 — синхронный показ записи выступления (А4) |
+| `ProceduralDemo.java` | Контрольный пример: входные данные и результаты всех алгоритмов |
+
+Запуск тестов (JUnit 4):
+
+```bash
+cd server
+mvn test
+```
+
+Запуск контрольного примера: в IntelliJ IDEA открыть `ProceduralDemo.java` и нажать Run, либо
+
+```bash
+cd server
+mvn -q compile
+java -cp target/classes ru.mirea.vcv.procedural.ProceduralDemo
+```
+
+Модели и схемы лежат в `docs/`:
+
+- `docs/bpmn/*.bpmn` — модель основного бизнес-процесса в BPMN 2.0 (верхний уровень и три декомпозиции); файлы в формате BPMN 2.0 XML для импорта в редакторы BPMN (Stormbpmn, bpmn.io, Camunda Modeler);
+- `docs/diagrams/er.puml` — логическая модель данных (PlantUML);
+- `docs/diagrams/ticket.puml` — диаграмма состояний билета;
+- `docs/diagrams/alg*.svg` — схемы алгоритмов по ГОСТ 19.701-90.
+
 ## Правила работы с репозиторием
 
 - Стабильная версия хранится в ветке `main`.

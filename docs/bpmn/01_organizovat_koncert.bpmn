@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="bp0_defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="bp0_collab"><bpmn:participant id="bp0_pool" name="Организовать концерт" processRef="bp0_process"/>
+<bpmn:participant id="bp0_ext" name="Зритель"/>
+<bpmn:messageFlow id="bp0_m0" name="Электронный билет" sourceRef="t1" targetRef="bp0_ext"/>
+<bpmn:messageFlow id="bp0_m1" name="Возврат" sourceRef="t2" targetRef="bp0_ext"/>
+<bpmn:messageFlow id="bp0_m2" name="Заявка на возврат" sourceRef="bp0_ext" targetRef="t4"/>
+</bpmn:collaboration>
+<bpmn:process id="bp0_process" isExecutable="false">
+<bpmn:laneSet id="bp0_ls">
+<bpmn:lane id="bp0_lane0" name="Менеджер билетного сервиса">
+<bpmn:flowNodeRef>t1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>t2</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e2</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>t4</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="bp0_lane1" name="Промоутер">
+<bpmn:flowNodeRef>s0</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>p1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>g1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>g2</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>t3</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>t5</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e3</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="bp0_lane2" name="Администратор площадки">
+<bpmn:flowNodeRef>p2</bpmn:flowNodeRef>
+</bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="s0" name="Решение о концерте принято"><bpmn:outgoing>bp0_f0</bpmn:outgoing><bpmn:conditionalEventDefinition id="s0_cd"><bpmn:condition xsi:type="bpmn:tFormalExpression">Решение о концерте принято</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:startEvent>
+<bpmn:subProcess id="p1" name="Подготовить концерт"><bpmn:incoming>bp0_f0</bpmn:incoming><bpmn:outgoing>bp0_f1</bpmn:outgoing></bpmn:subProcess>
+<bpmn:exclusiveGateway id="g1" name="Концерт подготовлен?"><bpmn:incoming>bp0_f1</bpmn:incoming><bpmn:outgoing>bp0_f2</bpmn:outgoing><bpmn:outgoing>bp0_f3</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:endEvent id="e1" name="Концерт отклонён"><bpmn:incoming>bp0_f2</bpmn:incoming></bpmn:endEvent>
+<bpmn:userTask id="t1" name="Продать билеты"><bpmn:incoming>bp0_f3</bpmn:incoming><bpmn:outgoing>bp0_f4</bpmn:outgoing><bpmn:dataOutputAssociation id="t1_ds_da"><bpmn:targetRef>ds</bpmn:targetRef></bpmn:dataOutputAssociation></bpmn:userTask>
+<bpmn:dataStoreReference id="ds" name="База продаж билетного сервиса"/>
+<bpmn:exclusiveGateway id="g2" name="Концерт отменён?"><bpmn:incoming>bp0_f4</bpmn:incoming><bpmn:outgoing>bp0_f5</bpmn:outgoing><bpmn:outgoing>bp0_f7</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:sendTask id="t2" name="Вернуть стоимость билетов (А2)"><bpmn:incoming>bp0_f5</bpmn:incoming><bpmn:outgoing>bp0_f6</bpmn:outgoing></bpmn:sendTask>
+<bpmn:endEvent id="e2" name="Стоимость билетов возвращена"><bpmn:incoming>bp0_f6</bpmn:incoming></bpmn:endEvent>
+<bpmn:subProcess id="p2" name="Провести концерт (А1, А3, А4)"><bpmn:incoming>bp0_f7</bpmn:incoming><bpmn:outgoing>bp0_f8</bpmn:outgoing></bpmn:subProcess>
+<bpmn:manualTask id="t3" name="Рассчитаться с артистом и подрядчиками"><bpmn:incoming>bp0_f8</bpmn:incoming><bpmn:outgoing>bp0_f9</bpmn:outgoing></bpmn:manualTask>
+<bpmn:userTask id="t4" name="Обработать возвраты билетов (А2)"><bpmn:incoming>bp0_f9</bpmn:incoming><bpmn:outgoing>bp0_f10</bpmn:outgoing></bpmn:userTask>
+<bpmn:userTask id="t5" name="Проанализировать продажи и посещаемость"><bpmn:incoming>bp0_f10</bpmn:incoming><bpmn:outgoing>bp0_f11</bpmn:outgoing></bpmn:userTask>
+<bpmn:endEvent id="e3" name="Концерт проведён"><bpmn:incoming>bp0_f11</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="bp0_f0" name="" sourceRef="s0" targetRef="p1"/>
+<bpmn:sequenceFlow id="bp0_f1" name="" sourceRef="p1" targetRef="g1"/>
+<bpmn:sequenceFlow id="bp0_f2" name="Нет" sourceRef="g1" targetRef="e1"/>
+<bpmn:sequenceFlow id="bp0_f3" name="Да" sourceRef="g1" targetRef="t1"/>
+<bpmn:sequenceFlow id="bp0_f4" name="" sourceRef="t1" targetRef="g2"/>
+<bpmn:sequenceFlow id="bp0_f5" name="Да" sourceRef="g2" targetRef="t2"/>
+<bpmn:sequenceFlow id="bp0_f6" name="" sourceRef="t2" targetRef="e2"/>
+<bpmn:sequenceFlow id="bp0_f7" name="Нет" sourceRef="g2" targetRef="p2"/>
+<bpmn:sequenceFlow id="bp0_f8" name="" sourceRef="p2" targetRef="t3"/>
+<bpmn:sequenceFlow id="bp0_f9" name="" sourceRef="t3" targetRef="t4"/>
+<bpmn:sequenceFlow id="bp0_f10" name="" sourceRef="t4" targetRef="t5"/>
+<bpmn:sequenceFlow id="bp0_f11" name="" sourceRef="t5" targetRef="e3"/>
+</bpmn:process>
+<bpmndi:BPMNDiagram id="bp0_d"><bpmndi:BPMNPlane id="bp0_pl" bpmnElement="bp0_collab">
+<bpmndi:BPMNShape id="bp0_pool_di" bpmnElement="bp0_pool" isHorizontal="true"><dc:Bounds x="0" y="150" width="1724" height="628"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp0_ext_di" bpmnElement="bp0_ext" isHorizontal="true"><dc:Bounds x="0" y="1" width="1724" height="54"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp0_lane0_di" bpmnElement="bp0_lane0" isHorizontal="true"><dc:Bounds x="36" y="150" width="1688" height="244"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp0_lane1_di" bpmnElement="bp0_lane1" isHorizontal="true"><dc:Bounds x="36" y="394" width="1688" height="244"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp0_lane2_di" bpmnElement="bp0_lane2" isHorizontal="true"><dc:Bounds x="36" y="638" width="1688" height="140"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="s0_di" bpmnElement="s0"><dc:Bounds x="117" y="445" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="p1_di" bpmnElement="p1" isExpanded="false"><dc:Bounds x="209" y="423" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="g1_di" bpmnElement="g1"><dc:Bounds x="420" y="440" width="48" height="48"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e1_di" bpmnElement="e1"><dc:Bounds x="579" y="549" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="t1_di" bpmnElement="t1"><dc:Bounds x="517" y="179" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="ds_di" bpmnElement="ds"><dc:Bounds x="573" y="302" width="50" height="44"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="g2_di" bpmnElement="g2"><dc:Bounds x="728" y="440" width="48" height="48"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="t2_di" bpmnElement="t2"><dc:Bounds x="825" y="179" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e2_di" bpmnElement="e2"><dc:Bounds x="1087" y="201" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="p2_di" bpmnElement="p2" isExpanded="false"><dc:Bounds x="825" y="667" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="t3_di" bpmnElement="t3"><dc:Bounds x="1025" y="423" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="t4_di" bpmnElement="t4"><dc:Bounds x="1225" y="179" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="t5_di" bpmnElement="t5"><dc:Bounds x="1425" y="423" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e3_di" bpmnElement="e3"><dc:Bounds x="1641" y="445" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="bp0_f0_di" bpmnElement="bp0_f0"><di:waypoint x="155" y="464"/><di:waypoint x="209" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f1_di" bpmnElement="bp0_f1"><di:waypoint x="371" y="464"/><di:waypoint x="420" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f2_di" bpmnElement="bp0_f2"><di:waypoint x="444" y="488"/><di:waypoint x="444" y="568"/><di:waypoint x="579" y="568"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f3_di" bpmnElement="bp0_f3"><di:waypoint x="444" y="440"/><di:waypoint x="444" y="220"/><di:waypoint x="517" y="220"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f4_di" bpmnElement="bp0_f4"><di:waypoint x="679" y="220"/><di:waypoint x="704" y="220"/><di:waypoint x="704" y="464"/><di:waypoint x="728" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f5_di" bpmnElement="bp0_f5"><di:waypoint x="752" y="440"/><di:waypoint x="752" y="220"/><di:waypoint x="825" y="220"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f6_di" bpmnElement="bp0_f6"><di:waypoint x="987" y="220"/><di:waypoint x="1087" y="220"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f7_di" bpmnElement="bp0_f7"><di:waypoint x="752" y="488"/><di:waypoint x="752" y="708"/><di:waypoint x="825" y="708"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f8_di" bpmnElement="bp0_f8"><di:waypoint x="987" y="708"/><di:waypoint x="1006" y="708"/><di:waypoint x="1006" y="464"/><di:waypoint x="1025" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f9_di" bpmnElement="bp0_f9"><di:waypoint x="1187" y="464"/><di:waypoint x="1206" y="464"/><di:waypoint x="1206" y="220"/><di:waypoint x="1225" y="220"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f10_di" bpmnElement="bp0_f10"><di:waypoint x="1387" y="220"/><di:waypoint x="1406" y="220"/><di:waypoint x="1406" y="464"/><di:waypoint x="1425" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_f11_di" bpmnElement="bp0_f11"><di:waypoint x="1587" y="464"/><di:waypoint x="1641" y="464"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_m0_di" bpmnElement="bp0_m0"><di:waypoint x="612" y="179"/><di:waypoint x="612" y="55"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_m1_di" bpmnElement="bp0_m1"><di:waypoint x="920" y="179"/><di:waypoint x="920" y="55"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp0_m2_di" bpmnElement="bp0_m2"><di:waypoint x="1292" y="55"/><di:waypoint x="1292" y="179"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="t1_ds_da_di" bpmnElement="t1_ds_da"><di:waypoint x="598" y="220"/><di:waypoint x="598" y="324"/></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

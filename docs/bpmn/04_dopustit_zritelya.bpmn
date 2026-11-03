@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="bp3_defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="bp3_collab"><bpmn:participant id="bp3_pool" name="Допустить зрителя" processRef="bp3_process"/>
+<bpmn:participant id="bp3_ext" name="Зритель"/>
+<bpmn:messageFlow id="bp3_m0" name="Электронный билет" sourceRef="bp3_ext" targetRef="s"/>
+<bpmn:messageFlow id="bp3_m1" name="Отказ" sourceRef="c2" targetRef="bp3_ext"/>
+</bpmn:collaboration>
+<bpmn:process id="bp3_process" isExecutable="false">
+<bpmn:laneSet id="bp3_ls">
+<bpmn:lane id="bp3_lane0" name="Контролёр">
+<bpmn:flowNodeRef>s</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>c1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>g</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>c2</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e1</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>c3</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>c4</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>e2</bpmn:flowNodeRef>
+</bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="s" name="Билет предъявлен"><bpmn:outgoing>bp3_f0</bpmn:outgoing><bpmn:messageEventDefinition id="s_md"/></bpmn:startEvent>
+<bpmn:userTask id="c1" name="Проверить билет (А1)"><bpmn:incoming>bp3_f0</bpmn:incoming><bpmn:outgoing>bp3_f1</bpmn:outgoing></bpmn:userTask>
+<bpmn:exclusiveGateway id="g" name="Билет действителен?"><bpmn:incoming>bp3_f1</bpmn:incoming><bpmn:outgoing>bp3_f2</bpmn:outgoing><bpmn:outgoing>bp3_f4</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:sendTask id="c2" name="Отказать во входе"><bpmn:incoming>bp3_f2</bpmn:incoming><bpmn:outgoing>bp3_f3</bpmn:outgoing></bpmn:sendTask>
+<bpmn:endEvent id="e1" name="Во входе отказано"><bpmn:incoming>bp3_f3</bpmn:incoming></bpmn:endEvent>
+<bpmn:userTask id="c3" name="Погасить билет (А1)"><bpmn:incoming>bp3_f4</bpmn:incoming><bpmn:outgoing>bp3_f5</bpmn:outgoing></bpmn:userTask>
+<bpmn:manualTask id="c4" name="Указать место в зале (А3)"><bpmn:incoming>bp3_f5</bpmn:incoming><bpmn:outgoing>bp3_f6</bpmn:outgoing></bpmn:manualTask>
+<bpmn:endEvent id="e2" name="Зритель допущен"><bpmn:incoming>bp3_f6</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="bp3_f0" name="" sourceRef="s" targetRef="c1"/>
+<bpmn:sequenceFlow id="bp3_f1" name="" sourceRef="c1" targetRef="g"/>
+<bpmn:sequenceFlow id="bp3_f2" name="Нет" sourceRef="g" targetRef="c2"/>
+<bpmn:sequenceFlow id="bp3_f3" name="" sourceRef="c2" targetRef="e1"/>
+<bpmn:sequenceFlow id="bp3_f4" name="Да" sourceRef="g" targetRef="c3"/>
+<bpmn:sequenceFlow id="bp3_f5" name="" sourceRef="c3" targetRef="c4"/>
+<bpmn:sequenceFlow id="bp3_f6" name="" sourceRef="c4" targetRef="e2"/>
+</bpmn:process>
+<bpmndi:BPMNDiagram id="bp3_d"><bpmndi:BPMNPlane id="bp3_pl" bpmnElement="bp3_collab">
+<bpmndi:BPMNShape id="bp3_pool_di" bpmnElement="bp3_pool" isHorizontal="true"><dc:Bounds x="0" y="0" width="1016" height="244"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp3_ext_di" bpmnElement="bp3_ext" isHorizontal="true"><dc:Bounds x="0" y="340" width="1016" height="54"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="bp3_lane0_di" bpmnElement="bp3_lane0" isHorizontal="true"><dc:Bounds x="36" y="0" width="980" height="244"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="s_di" bpmnElement="s"><dc:Bounds x="117" y="51" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="c1_di" bpmnElement="c1"><dc:Bounds x="209" y="29" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="g_di" bpmnElement="g"><dc:Bounds x="420" y="46" width="48" height="48"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="c2_di" bpmnElement="c2"><dc:Bounds x="517" y="133" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e1_di" bpmnElement="e1"><dc:Bounds x="779" y="155" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="c3_di" bpmnElement="c3"><dc:Bounds x="517" y="29" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="c4_di" bpmnElement="c4"><dc:Bounds x="717" y="29" width="162" height="82"/></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="e2_di" bpmnElement="e2"><dc:Bounds x="933" y="51" width="38" height="38"/></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="bp3_f0_di" bpmnElement="bp3_f0"><di:waypoint x="155" y="70"/><di:waypoint x="209" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f1_di" bpmnElement="bp3_f1"><di:waypoint x="371" y="70"/><di:waypoint x="420" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f2_di" bpmnElement="bp3_f2"><di:waypoint x="444" y="94"/><di:waypoint x="444" y="174"/><di:waypoint x="517" y="174"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f3_di" bpmnElement="bp3_f3"><di:waypoint x="679" y="174"/><di:waypoint x="779" y="174"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f4_di" bpmnElement="bp3_f4"><di:waypoint x="468" y="70"/><di:waypoint x="517" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f5_di" bpmnElement="bp3_f5"><di:waypoint x="679" y="70"/><di:waypoint x="717" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_f6_di" bpmnElement="bp3_f6"><di:waypoint x="879" y="70"/><di:waypoint x="933" y="70"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_m0_di" bpmnElement="bp3_m0"><di:waypoint x="122" y="340"/><di:waypoint x="122" y="89"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="bp3_m1_di" bpmnElement="bp3_m1"><di:waypoint x="612" y="215"/><di:waypoint x="612" y="340"/></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

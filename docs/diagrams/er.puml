@@ -1,0 +1,101 @@
+@startuml
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam linetype ortho
+skinparam dpi 220
+skinparam class {
+  BackgroundColor white
+  BorderColor black
+  ArrowColor black
+}
+hide circle
+hide methods
+hide stereotypes
+
+entity "Организатор" as org {
+  * id_организатора <<PK>>
+  --
+  * название
+  * email
+}
+entity "Площадка" as venue {
+  * id_площадки <<PK>>
+  --
+  * id_организатора <<FK>>
+  * название
+}
+entity "Точка обзора" as vp {
+  * id_точки <<PK>>
+  --
+  * id_площадки <<FK>>
+  * название
+  * файл_панорамы
+  * порядок
+}
+entity "Мероприятие" as ev {
+  * id_мероприятия <<PK>>
+  --
+  * id_площадки <<FK>>
+  * название
+  * время_начала
+  * длительность
+  * url_записи
+  * вместимость_экземпляра
+  * отменено
+}
+entity "Зритель" as viewer {
+  * id_зрителя <<PK>>
+  --
+  * email
+  имя
+}
+entity "Билет" as t {
+  * код_билета <<PK>>
+  --
+  * id_мероприятия <<FK>>
+  * id_покупателя <<FK>>
+  id_зрителя <<FK>>
+  * цена_коп
+  * состояние
+}
+entity "Переход состояния билета" as tr {
+  * id_перехода <<PK>>
+  --
+  * код_билета <<FK>>
+  * из_состояния
+  * в_состояние
+  * время
+  * причина
+  сумма_возврата_коп
+}
+entity "Экземпляр зала" as hi {
+  * id_экземпляра <<PK>>
+  --
+  * id_мероприятия <<FK>>
+  * номер
+  * число_зрителей
+}
+entity "Сеанс" as s {
+  * id_сеанса <<PK>>
+  --
+  * код_билета <<FK>>
+  * id_экземпляра <<FK>>
+  id_точки <<FK>>
+  * начало
+  конец
+}
+
+org ||--o{ venue
+venue ||--|{ vp
+venue ||--o{ ev
+ev ||--o{ t
+viewer ||--o{ t : покупает
+viewer |o--o{ t : закреплён
+t ||--o{ tr
+ev ||--o{ hi
+t ||--o{ s
+hi ||--o{ s
+vp |o--o{ s
+@enduml
