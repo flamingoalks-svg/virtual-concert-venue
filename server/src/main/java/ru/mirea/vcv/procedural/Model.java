@@ -32,6 +32,7 @@ public final class Model {
         public String title;
         public long startEpochSec;   // время начала, секунды Unix
         public long durationSec;     // длительность записи выступления
+        public int instanceCapacity; // вместимость одного экземпляра зала
         public boolean cancelled;    // мероприятие отменено организатором
     }
 
@@ -53,7 +54,30 @@ public final class Model {
         public int toState;
         public long atEpochSec;
         public String reason;
-        public long refundKop;       // сумма возврата, если переход связан с возвратом (иначе 0)
+    }
+
+    /**
+     * Заявка на возврат и результат её рассмотрения. Хранится отдельно от билета, поэтому
+     * время, основание и результат сохраняются, даже если позднее состояние билета изменится.
+     */
+    public static class RefundRequest {
+        public String ticketCode;
+        public String requesterId;   // покупатель или организатор (при отмене мероприятия)
+        public long requestedAtSec;  // когда поступила заявка
+        public String basis;         // основание: «отказ зрителя» или «отмена мероприятия»
+        public boolean approved;     // результат: возврат выполнен или отказано
+        public int percent;          // доля возврата, %
+        public long amountKop;       // сумма возврата, копейки
+        public String decision;      // пояснение к результату (доля или причина отказа)
+    }
+
+    /** Сеанс: пребывание зрителя в конкретном экземпляре зала. */
+    public static class Session {
+        public String ticketCode;
+        public String viewerId;
+        public int instanceNumber;   // экземпляр зала, закреплённый за сеансом
+        public long startSec;
+        public long endSec = -1;     // -1 — сеанс открыт
     }
 
     /** Экземпляр (копия) виртуального зала с текущим числом зрителей. */
