@@ -1,0 +1,83 @@
+@startuml
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam dpi 220
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 50
+skinparam class {
+  BackgroundColor white
+  BorderColor black
+  ArrowColor black
+}
+skinparam package {
+  BorderColor #555555
+}
+set separator none
+hide circle
+hide empty members
+package "ru.mirea.vcv.oop.hall" {
+  class HallEntrance {
+    + enter(code, viewerId, now) : Entry
+  }
+  class VirtualHall {
+    - instanceCapacity : int
+    + allocateSeat() : HallInstance
+    + totalViewers() : int
+  }
+  class HallInstance {
+    - number : int
+    - capacity : int
+    - viewers : int
+    + hasFreeSeat() : boolean
+    ~ occupy()
+    ~ release()
+  }
+  class Session {
+    - viewerId : String
+    - startedAt : Instant
+    - endedAt : Instant
+    + isOpen() : boolean
+    + close(now)
+  }
+  class Entry {
+    - result : AdmissionResult
+    + getSession() : Optional<Session>
+  }
+}
+package "ru.mirea.vcv.oop.playback" {
+  class PlaybackSchedule {
+    + phaseAt(now) : PlaybackPhase
+    + positionAt(now) : Duration
+  }
+  class DriftCorrector {
+    - threshold : Duration
+    + seekTarget(clientPosition, now) : Optional<Duration>
+  }
+  enum PlaybackPhase <<enumeration>> {
+    BEFORE_START, PLAYING, ENDED
+  }
+}
+package "классы других пакетов" as other {
+  class Event
+  class Ticket
+  class AdmissionService
+  interface TicketRepository <<interface>>
+}
+HallEntrance --> "1" Event
+HallEntrance --> "1" AdmissionService
+HallEntrance --> "1" TicketRepository
+HallEntrance *-- "1" VirtualHall : hall >
+HallEntrance *-- "*" Session : sessions >
+HallEntrance ..> Entry
+VirtualHall *-- "*" HallInstance : instances
+Session --> "1" HallInstance : instance
+Session --> "1" Ticket : ticket
+Entry --> "0..1" Session
+PlaybackSchedule --> "1" Event
+DriftCorrector --> "1" PlaybackSchedule
+PlaybackSchedule ..> PlaybackPhase
+@enduml

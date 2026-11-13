@@ -1,0 +1,51 @@
+@startuml
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam dpi 220
+skinparam sequence {
+  ParticipantBackgroundColor white
+  ParticipantBorderColor black
+  LifeLineBorderColor black
+  ArrowColor black
+}
+hide footbox
+skinparam noteBackgroundColor white
+skinparam noteBorderColor black
+participant ":HallEntrance" as E
+participant ":AdmissionService" as A
+participant ":TicketRepository" as R
+participant "rule:AdmissionRule" as Rl
+participant "t:Ticket" as T
+participant ":VirtualHall" as H
+participant "i:HallInstance" as I
+participant "s:Session" as S
+
+[-> E : enter(code, viewerId, now)
+activate E
+E -> A : admit(event, code, viewerId, now)
+activate A
+A -> R : findByCode(code)
+R --> A : t
+loop для каждого правила
+  A -> Rl : check(t, event, viewerId, now)
+  Rl --> A : пусто или причина отказа
+end
+alt билет «Оплачен»
+  A -> T : redeem(viewerId, now)
+  note right of T : «Оплачен» → «Использован»,\nзапись в history
+else билет «Использован»
+  A -> T : resumeSession()
+end
+A --> E : ADMITTED / READMITTED
+deactivate A
+E -> H : allocateSeat()
+activate H
+H -> I : occupy()
+H --> E : i
+deactivate H
+E -> S ** : new Session(t, viewerId, i, now)
+[<-- E : Entry(результат, s)
+deactivate E
+@enduml
