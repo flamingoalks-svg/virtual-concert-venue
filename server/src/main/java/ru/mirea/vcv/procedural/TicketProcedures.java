@@ -102,19 +102,12 @@ public final class TicketProcedures {
     /** Меняет состояние билета и записывает переход в журнал. */
     static void changeState(Model.Ticket t, int newState, long nowSec, String reason,
                             List<Model.Transition> history) {
-        changeState(t, newState, nowSec, reason, 0, history);
-    }
-
-    /** То же, с фиксацией суммы возврата в записи перехода. */
-    static void changeState(Model.Ticket t, int newState, long nowSec, String reason, long refundKop,
-                            List<Model.Transition> history) {
         Model.Transition tr = new Model.Transition();
         tr.ticketCode = t.code;
         tr.fromState = t.state;
         tr.toState = newState;
         tr.atEpochSec = nowSec;
         tr.reason = reason;
-        tr.refundKop = refundKop;
         history.add(tr);
         t.state = newState;
     }

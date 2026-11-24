@@ -56,11 +56,12 @@ psql -d vcv -f db/schema.sql
 
 | Файл | Что делает |
 |---|---|
-| `Model.java` | Структуры данных: мероприятие, билет, переход состояния билета, экземпляр зала |
+| `Model.java` | Структуры данных: мероприятие, билет, переход состояния билета, заявка на возврат, сеанс, экземпляр зала |
 | `TicketProcedures.java` | Алгоритм 1 — проверка и гашение билета при входе (А1) |
 | `RefundProcedures.java` | Алгоритм 2 — возврат билета и отмена мероприятия (А2) |
 | `InstanceProcedures.java` | Алгоритм 3 — распределение зрителей по экземплярам зала (А3) |
 | `PlaybackProcedures.java` | Алгоритм 4 — синхронный показ записи выступления (А4) |
+| `SessionProcedures.java` | Вход в зал и выход: проверка билета, выбор экземпляра и закрепление его за сеансом (А1, А3) |
 | `ProceduralDemo.java` | Контрольный пример: входные данные и результаты всех алгоритмов |
 
 Запуск тестов (JUnit 4):
@@ -84,6 +85,31 @@ java -cp target/classes ru.mirea.vcv.procedural.ProceduralDemo
 - `docs/diagrams/er.puml` — логическая модель данных (PlantUML);
 - `docs/diagrams/ticket.puml` — диаграмма состояний билета;
 - `docs/diagrams/alg*.svg` — схемы алгоритмов по ГОСТ 19.701-90.
+
+Контрольный пример для замечания о возврате: билет `T-000` относится к мероприятию E1; заявка на возврат по мероприятию E2 отклоняется, состояние билета не меняется, заявка сохраняется в журнале с причиной отказа (тест `ticketOfAnotherEventIsNotRefunded`).
+
+## Объектно-ориентированная реализация
+
+Те же операции А1–А4 реализованы в объектно-ориентированном стиле в пакете `server/src/main/java/ru/mirea/vcv/oop`:
+
+| Пакет | Классы | Что делают |
+|---|---|---|
+| `event` | `Event` | Мероприятие; само отвечает на вопросы о времени: открыт ли зал, началось ли, сколько осталось до начала |
+| `ticket` | `Ticket`, `TicketState`, `StateTransition`, `TicketRepository`, `InMemoryTicketRepository`, `IllegalTicketStateException` | Билет меняет состояние только своими методами; допустимые переходы заданы в `TicketState` |
+| `admission` | `AdmissionService`, `AdmissionRule`, `AdmissionRules`, `BlockedViewerRule`, `AdmissionResult` | Допуск в зал (А1) как последовательность правил; новое правило — новый класс |
+| `refund` | `RefundService`, `RefundPolicy`, `StatutoryRefundPolicy`, `FullRefundPolicy`, `RefundRequest`, `RefundBasis` | Возвраты (А2) с подключаемыми правилами расчёта доли и журналом заявок |
+| `hall` | `HallEntrance`, `VirtualHall`, `HallInstance`, `Session`, `Entry` | Вход в зал (А1 + А3), экземпляр закрепляется за сеансом |
+| `playback` | `PlaybackSchedule`, `DriftCorrector`, `PlaybackPhase` | Синхронный показ записи (А4) |
+
+Контрольный пример — `OopDemo.java` (тот же сценарий, что в `ProceduralDemo`, плюс новое требование «стоп-лист зрителей»):
+
+```bash
+cd server
+mvn -q compile
+java -cp target/classes ru.mirea.vcv.oop.OopDemo
+```
+
+`EquivalenceTest` проверяет, что процедурная и объектно-ориентированная реализации дают одинаковые результаты на одних и тех же данных. UML-диаграммы классов и последовательности — в `docs/diagrams/oop/`.
 
 ## Правила работы с репозиторием
 

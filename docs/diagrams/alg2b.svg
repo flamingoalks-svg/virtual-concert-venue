@@ -12,7 +12,7 @@
 <text x="427" y="683.0" font-size="14">да</text>
 <polyline points="280.0,616.0 262.0,616.0 262.0,1128.0 295.0,1128.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <text x="272.0" y="610.0" font-size="14" text-anchor="end">нет</text>
-<polyline points="420.0,794.0 420.0,835.1" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,794.0 420.0,826.5" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <text x="427" y="811.0" font-size="14">да</text>
 <polyline points="560.0,744.0 590.0,744.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <text x="568.0" y="738.0" font-size="14" text-anchor="start">нет</text>
@@ -20,7 +20,7 @@
 <text x="737" y="811.0" font-size="14">да</text>
 <polyline points="870.0,744.0 900.0,744.0 900.0,1000.0 545.0,1000.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <text x="878.0" y="738.0" font-size="14" text-anchor="start">нет</text>
-<polyline points="420.0,908.9 420.0,969.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
+<polyline points="420.0,917.5 420.0,969.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <polyline points="730.0,903.0 730.0,951.0 420.0,951.0 420.0,969.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <polyline points="420.0,1031.0 420.0,1097.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
 <polyline points="420.0,1159.0 420.0,1175.0 205.0,1175.0 205.0,488.0 280.0,488.0" fill="none" stroke="black" stroke-width="1.3" marker-end="url(#a)"/>
@@ -42,10 +42,11 @@
 <text x="420" y="732.0" text-anchor="middle" font-size="15">Состояние</text>
 <text x="420" y="749.2" text-anchor="middle" font-size="15">«Оплачен» или</text>
 <text x="420" y="766.5" text-anchor="middle" font-size="15">«Использован»?</text>
-<rect x="295.0" y="835.125" width="250" height="73.75" fill="white" stroke="black" stroke-width="1.3"/>
-<text x="420" y="860.0" text-anchor="middle" font-size="15">итог := итог + цена;</text>
-<text x="420" y="877.2" text-anchor="middle" font-size="15">состояние := «Аннулирован»;</text>
-<text x="420" y="894.5" text-anchor="middle" font-size="15">записать переход</text>
+<rect x="295.0" y="826.5" width="250" height="91.0" fill="white" stroke="black" stroke-width="1.3"/>
+<text x="420" y="851.4" text-anchor="middle" font-size="15">итог := итог + цена;</text>
+<text x="420" y="868.6" text-anchor="middle" font-size="15">записать заявку (100 %);</text>
+<text x="420" y="885.9" text-anchor="middle" font-size="15">состояние := «Аннулирован»;</text>
+<text x="420" y="903.1" text-anchor="middle" font-size="15">записать переход</text>
 <polygon points="730,694.0 870.0,744.0 730,794.0 590.0,744.0" fill="white" stroke="black" stroke-width="1.3"/>
 <text x="730" y="740.6" text-anchor="middle" font-size="15">Состояние =</text>
 <text x="730" y="757.9" text-anchor="middle" font-size="15">«Забронирован»?</text>

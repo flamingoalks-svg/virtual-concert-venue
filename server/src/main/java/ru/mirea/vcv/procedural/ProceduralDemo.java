@@ -24,9 +24,14 @@ public final class ProceduralDemo {
 
     public static void main(String[] args) {
         List<Model.Transition> history = new ArrayList<>();
+        List<Model.RefundRequest> requests = new ArrayList<>();
+        List<Model.Session> sessions = new ArrayList<>();
 
         Model.Event ev = event("E1", "Вечер камерной музыки",
                 Instant.parse("2026-12-10T16:00:00Z").getEpochSecond(), 90 * 60);
+        ev.instanceCapacity = 2;
+        Model.Event other = event("E2", "Джазовый вечер",
+                Instant.parse("2026-12-20T16:00:00Z").getEpochSecond(), 120 * 60);
         System.out.println("Мероприятие: " + ev.title + ", начало " + time(ev.startEpochSec)
                 + ", длительность записи " + ev.durationSec / 60 + " мин");
 
@@ -35,9 +40,14 @@ public final class ProceduralDemo {
         System.out.println("== Алгоритм 2. Возврат билета (цена 1500,00 руб.) ==");
         Model.Ticket probe = ticket("T-000", ev.id, Model.PAID, 150_000);
         long denied = RefundProcedures.requestRefund(probe, ev, "someone-else",
-                ev.startEpochSec - 20 * DAY, history);
+                ev.startEpochSec - 20 * DAY, history, requests);
         System.out.println("T-000: заявка не от покупателя -> "
                 + (denied == RefundProcedures.REFUND_DENIED ? "в возврате отказано" : rub(denied))
+                + ", состояние «" + Model.STATE_NAMES[probe.state] + "»");
+        long wrong = RefundProcedures.requestRefund(probe, other, probe.buyerId,
+                ev.startEpochSec - 20 * DAY, history, requests);
+        System.out.println("T-000: билет на E1, заявка по E2 -> "
+                + (wrong == RefundProcedures.REFUND_DENIED ? "в возврате отказано" : rub(wrong))
                 + ", состояние «" + Model.STATE_NAMES[probe.state] + "»");
         long[] daysBefore = {12, 7, 4, 2};
         List<Model.Ticket> all = new ArrayList<>();
@@ -45,7 +55,7 @@ public final class ProceduralDemo {
             Model.Ticket t = ticket("T-00" + (i + 1), ev.id, Model.PAID, 150_000);
             all.add(t);
             long now = ev.startEpochSec - daysBefore[i] * DAY;
-            long amount = RefundProcedures.requestRefund(t, ev, t.buyerId, now, history);
+            long amount = RefundProcedures.requestRefund(t, ev, t.buyerId, now, history, requests);
             System.out.printf("%s: заявка за %d дн. -> %s, состояние «%s»%n", t.code, daysBefore[i],
                     amount == RefundProcedures.REFUND_DENIED ? "в возврате отказано"
                             : "к возврату " + rub(amount),
@@ -72,6 +82,31 @@ public final class ProceduralDemo {
         admit(byCode, ev, "T-002", "viewer-3", ev.startEpochSec + 16 * 60, history);
         admit(byCode, ev, "X-999", "viewer-4", ev.startEpochSec + 17 * 60, history);
         admit(byCode, ev, "T-004", "viewer-5", ev.startEpochSec + 2 * HOUR, history);
+
+        // ---------- Вход в зал: экземпляр закрепляется за сеансом ----------
+        System.out.println();
+        System.out.println("== Вход в зал (алгоритмы 1 и 3, вместимость экземпляра 2) ==");
+        List<Model.HallInstance> rooms = new ArrayList<>();
+        String[] codes = {"T-006", "T-007", "T-008"};
+        for (int i = 0; i < codes.length; i++) {
+            Model.Ticket t = ticket(codes[i], ev.id, Model.PAID, 150_000);
+            byCode.put(t.code, t);
+        }
+        long enter = ev.startEpochSec - 5 * 60;
+        for (int i = 0; i < codes.length; i++) {
+            enter(byCode, ev, codes[i], "viewer-" + (6 + i), enter + i * 60, history, rooms, sessions);
+        }
+        enter(byCode, ev, "T-006", "viewer-6", enter + 4 * 60, history, rooms, sessions);
+        Model.Session first = sessions.get(0);
+        SessionProcedures.leaveHall(first, byCode.get(first.ticketCode), rooms, ev.startEpochSec + 20 * 60);
+        System.out.println(time(first.endSec) + " " + first.ticketCode + ", " + first.viewerId
+                + " вышел из экземпляра " + first.instanceNumber + ": " + occupancy(rooms));
+        enter(byCode, ev, "T-006", "viewer-6", ev.startEpochSec + 25 * 60, history, rooms, sessions);
+        System.out.println("Сеансы:");
+        for (Model.Session s : sessions) {
+            System.out.printf("  %s, %s: экземпляр %d, вход %s, выход %s%n", s.ticketCode, s.viewerId,
+                    s.instanceNumber, time(s.startSec), s.endSec < 0 ? "сеанс открыт" : time(s.endSec));
+        }
 
         // ---------- Алгоритм 3: распределение по экземплярам ----------
         System.out.println();
@@ -114,14 +149,13 @@ public final class ProceduralDemo {
         // ---------- Алгоритм 2: отмена мероприятия ----------
         System.out.println();
         System.out.println("== Алгоритм 2. Отмена мероприятия организатором ==");
-        Model.Event ev2 = event("E2", "Джазовый вечер",
-                Instant.parse("2026-12-20T16:00:00Z").getEpochSecond(), 120 * 60);
+        Model.Event ev2 = other;
         List<Model.Ticket> t2 = new ArrayList<>();
         t2.add(ticket("J-001", ev2.id, Model.PAID, 120_000));
         t2.add(ticket("J-002", ev2.id, Model.PAID, 120_000));
         t2.add(ticket("J-003", ev2.id, Model.RESERVED, 120_000));
         t2.add(ticket("J-004", ev2.id, Model.REFUNDED, 120_000));
-        long total = RefundProcedures.cancelEvent(ev2, t2, ev2.startEpochSec - 2 * DAY, history);
+        long total = RefundProcedures.cancelEvent(ev2, t2, ev2.startEpochSec - 2 * DAY, history, requests);
         for (Model.Ticket t : t2) {
             System.out.println(t.code + ": «" + Model.STATE_NAMES[t.state] + "»");
         }
@@ -131,9 +165,17 @@ public final class ProceduralDemo {
         System.out.println();
         System.out.println("== Журнал переходов состояний билетов ==");
         for (Model.Transition tr : history) {
-            System.out.printf("%s %s: %s -> %s (%s)%s%n", time(tr.atEpochSec), tr.ticketCode,
-                    Model.STATE_NAMES[tr.fromState], Model.STATE_NAMES[tr.toState], tr.reason,
-                    tr.refundKop > 0 ? ", возврат " + rub(tr.refundKop) : "");
+            System.out.printf("%s %s: %s -> %s (%s)%n", time(tr.atEpochSec), tr.ticketCode,
+                    Model.STATE_NAMES[tr.fromState], Model.STATE_NAMES[tr.toState], tr.reason);
+        }
+
+        // ---------- Журнал заявок на возврат ----------
+        System.out.println();
+        System.out.println("== Заявки на возврат ==");
+        for (Model.RefundRequest r : requests) {
+            System.out.printf("%s %s, %s, основание «%s»: %s%n", time(r.requestedAtSec), r.ticketCode,
+                    r.requesterId, r.basis,
+                    r.approved ? r.decision + ", " + rub(r.amountKop) : "отказ — " + r.decision);
         }
     }
 
@@ -163,6 +205,14 @@ public final class ProceduralDemo {
         int r = TicketProcedures.admit(byCode, ev, code, viewer, now, history);
         System.out.printf("%s %s, %s -> %s%n", time(now), code, viewer,
                 TicketProcedures.RESULT_NAMES[r]);
+    }
+
+    private static void enter(Map<String, Model.Ticket> byCode, Model.Event ev, String code, String viewer,
+                              long now, List<Model.Transition> history, List<Model.HallInstance> rooms,
+                              List<Model.Session> sessions) {
+        Model.Session s = SessionProcedures.enterHall(byCode, ev, code, viewer, now, history, rooms, sessions);
+        System.out.printf("%s %s, %s -> %s%n", time(now), code, viewer,
+                s == null ? "во входе отказано" : "сеанс в экземпляре " + s.instanceNumber + " (" + occupancy(rooms) + ")");
     }
 
     private static String occupancy(List<Model.HallInstance> halls) {

@@ -1,0 +1,87 @@
+@startuml
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam dpi 220
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 50
+skinparam class {
+  BackgroundColor white
+  BorderColor black
+  ArrowColor black
+}
+skinparam package {
+  BorderColor #555555
+}
+set separator none
+hide circle
+hide empty members
+package "ru.mirea.vcv.oop.event" {
+  class Event {
+    - id : String
+    - start : Instant
+    - duration : Duration
+    - instanceCapacity : int
+    - cancelled : boolean
+    + cancel()
+    + isHallOpen(now) : boolean
+    + hasStarted(now) : boolean
+    + hasFinished(now) : boolean
+    + timeToStart(now) : Duration
+  }
+}
+package "ru.mirea.vcv.oop.ticket" {
+  class Ticket {
+    - code : String
+    - buyerId : String
+    - priceKop : long
+    - state : TicketState
+    - viewerId : String
+    - sessionActive : boolean
+    + isFor(event) : boolean
+    + isBoughtBy(personId) : boolean
+    + pay(now)
+    + redeem(viewerId, now)
+    + resumeSession()
+    + endSession()
+    + refund(percent, now)
+    + annul(now)
+    + cancelReservation(now, reason)
+    - moveTo(target, now, reason)
+  }
+  enum TicketState <<enumeration>> {
+    RESERVED, PAID, USED,
+    REFUNDED, ANNULLED, CANCELLED
+    --
+    + next() : Set<TicketState>
+    + canMoveTo(target) : boolean
+    + allowsEntry() : boolean
+  }
+  class StateTransition {
+    - from : TicketState
+    - to : TicketState
+    - at : Instant
+    - reason : String
+  }
+  interface TicketRepository <<interface>> {
+    + save(ticket)
+    + findByCode(code) : Optional<Ticket>
+    + findByEvent(event) : List<Ticket>
+  }
+  class InMemoryTicketRepository {
+    - byCode : Map<String, Ticket>
+  }
+  class IllegalTicketStateException
+  class IllegalStateException <<java.lang>>
+}
+Ticket "*" -left-> "1" Event : event
+Ticket --> "1" TicketState : state
+Ticket *-down- "*" StateTransition : history
+Ticket ..> IllegalTicketStateException : <<throws>>
+IllegalTicketStateException -up-|> IllegalStateException
+InMemoryTicketRepository .up.|> TicketRepository
+InMemoryTicketRepository o-left- "*" Ticket
+@enduml
