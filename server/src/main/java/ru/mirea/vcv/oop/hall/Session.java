@@ -20,6 +20,7 @@ public class Session {
         this.viewerId = viewerId;
         this.instance = instance;
         this.startedAt = startedAt;
+        ticket.bindSessionCloser(this::releaseSeat);
     }
 
     public Ticket getTicket() {
@@ -51,8 +52,11 @@ public class Session {
         if (!isOpen()) {
             return;
         }
-        endedAt = now;
+        ticket.endSession(now);
+    }
+
+    private void releaseSeat(Instant now) {
         instance.release();
-        ticket.endSession();
+        endedAt = now;
     }
 }

@@ -77,6 +77,47 @@ public class ServicesTest {
     }
 
     @Test
+    public void cancellationClosesOpenSessionsAndReleasesOnlyThisEventsSeats() {
+        AdmissionService admission = new AdmissionService(repo, AdmissionRules.standard());
+        HallEntrance entrance = new HallEntrance(event, repo, admission);
+        Ticket a = paid("A");
+        paid("B");
+        Session first = entrance.enter("A", "v1", START).getSession().get();
+        Session alreadyClosed = entrance.enter("B", "v2", START).getSession().get();
+        Instant leftAt = START.plusSeconds(5);
+        alreadyClosed.close(leftAt);
+        Session second = entrance.enter("B", "v2", START.plusSeconds(6)).getSession().get();
+        assertEquals(2, entrance.getHall().totalViewers());
+
+        Event other = new Event("E2", "Другой концерт", START, Duration.ofHours(1), 2);
+        Ticket otherTicket = new Ticket("C", other, "buyer-C", 150_000);
+        otherTicket.pay(START.minusSeconds(60));
+        repo.save(otherTicket);
+        HallEntrance otherEntrance = new HallEntrance(other, repo, admission);
+        Session unaffected = otherEntrance.enter("C", "v3", START).getSession().get();
+
+        Instant cancelledAt = START.plusSeconds(10);
+        RefundService refunds = RefundService.statutory();
+        assertEquals(300_000, refunds.cancelEvent(event, repo, cancelledAt));
+        assertEquals(TicketState.ANNULLED, a.getState());
+        assertFalse(a.isSessionActive());
+        assertFalse(first.isOpen());
+        assertEquals(cancelledAt, first.getEndedAt());
+        assertEquals(cancelledAt, second.getEndedAt());
+        assertEquals(leftAt, alreadyClosed.getEndedAt());
+        assertEquals(0, entrance.getHall().totalViewers());
+        assertTrue(unaffected.isOpen());
+        assertEquals(1, otherEntrance.getHall().totalViewers());
+        assertEquals(0, refunds.cancelEvent(event, repo, cancelledAt.plusSeconds(1)));
+        assertEquals(cancelledAt, first.getEndedAt());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeEventDurationIsRejected() {
+        new Event("E2", "Концерт", START, Duration.ofSeconds(-1), 2);
+    }
+
+    @Test
     public void entranceBindsChosenInstanceToSession() {
         AdmissionService admission = new AdmissionService(repo, AdmissionRules.standard());
         HallEntrance entrance = new HallEntrance(event, repo, admission);

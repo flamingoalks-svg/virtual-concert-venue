@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import ru.mirea.vcv.oop.event.Event;
 
 /**
@@ -21,6 +22,7 @@ public class Ticket {
     private TicketState state = TicketState.RESERVED;
     private String viewerId;
     private boolean sessionActive;
+    private Consumer<Instant> sessionCloser;
     private final List<StateTransition> history = new ArrayList<>();
 
     public Ticket(String code, Event event, String buyerId, long priceKop) {
@@ -89,8 +91,25 @@ public class Ticket {
         sessionActive = true;
     }
 
-    public void endSession() {
+    /** После допуска зал привязывает освобождение занятого места к текущему сеансу. */
+    public void bindSessionCloser(Consumer<Instant> closer) {
+        if (!sessionActive || sessionCloser != null) {
+            throw new IllegalStateException("Билет " + code + ": невозможно привязать сеанс");
+        }
+        sessionCloser = Objects.requireNonNull(closer);
+    }
+
+    public void endSession(Instant now) {
+        Objects.requireNonNull(now);
+        if (sessionCloser != null) {
+            sessionCloser.accept(now);
+            sessionCloser = null;
+        }
         sessionActive = false;
+    }
+
+    public void endSession() {
+        endSession(Instant.now());
     }
 
     public void refund(int percent, Instant now) {
@@ -99,7 +118,7 @@ public class Ticket {
 
     public void annul(Instant now) {
         moveTo(TicketState.ANNULLED, now, "отмена мероприятия, 100 %");
-        sessionActive = false;
+        endSession(now);
     }
 
     public void cancelReservation(Instant now, String reason) {
