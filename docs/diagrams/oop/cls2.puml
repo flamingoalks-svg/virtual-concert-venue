@@ -1,0 +1,82 @@
+@startuml
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam dpi 220
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 50
+skinparam class {
+  BackgroundColor white
+  BorderColor black
+  ArrowColor black
+}
+skinparam package {
+  BorderColor #555555
+}
+set separator none
+hide circle
+hide empty members
+package "ru.mirea.vcv.oop.admission" {
+  interface AdmissionRule <<interface>> {
+    + check(ticket, event, viewerId, now) : Optional<AdmissionResult>
+  }
+  class AdmissionRules <<utility>> {
+    + {static} standard() : List<AdmissionRule>
+  }
+  class BlockedViewerRule {
+    - blocked : Set<String>
+    + block(viewerId)
+  }
+  class AdmissionService {
+    + addRule(rule)
+    + admit(event, code, viewerId, now) : AdmissionResult
+  }
+  enum AdmissionResult <<enumeration>> {
+    ADMITTED, READMITTED, NOT_FOUND, ...
+    + isAdmitted() : boolean
+  }
+}
+package "ru.mirea.vcv.oop.refund" {
+  interface RefundPolicy <<interface>> {
+    + percent(timeToStart) : int
+  }
+  class StatutoryRefundPolicy
+  class FullRefundPolicy
+  class RefundService {
+    + {static} statutory() : RefundService
+    + requestRefund(ticket, requesterId, now) : RefundRequest
+    + cancelEvent(event, tickets, now) : long
+  }
+  class RefundRequest {
+    - requestedAt : Instant
+    - basis : RefundBasis
+    - approved : boolean
+    - percent : int
+    - amountKop : long
+    - decision : String
+  }
+  enum RefundBasis <<enumeration>> {
+    VIEWER_REFUSAL
+    EVENT_CANCELLATION
+  }
+}
+package "ru.mirea.vcv.oop.ticket" as tk {
+  class Ticket
+  interface TicketRepository <<interface>>
+}
+AdmissionService -up-> "1" TicketRepository
+AdmissionService o-- "*" AdmissionRule : rules
+AdmissionRules ..> AdmissionRule : <<create>>
+BlockedViewerRule .up.|> AdmissionRule
+AdmissionService ..> AdmissionResult
+StatutoryRefundPolicy .up.|> RefundPolicy
+FullRefundPolicy .up.|> RefundPolicy
+RefundService --> "2" RefundPolicy : viewerPolicy,\ncancellationPolicy
+RefundService *-- "*" RefundRequest : journal
+RefundRequest --> "1" RefundBasis
+RefundService .up.> Ticket
+RefundService .up.> TicketRepository
+@enduml
