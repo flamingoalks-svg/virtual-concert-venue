@@ -29,6 +29,9 @@ public class Event {
         this.title = Objects.requireNonNull(title);
         this.start = Objects.requireNonNull(start);
         this.duration = Objects.requireNonNull(duration);
+        if (duration.isNegative()) {
+            throw new IllegalArgumentException("Длительность мероприятия не может быть отрицательной");
+        }
         this.instanceCapacity = instanceCapacity;
     }
 
